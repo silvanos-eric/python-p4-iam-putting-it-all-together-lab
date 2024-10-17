@@ -22,7 +22,18 @@ class User(db.Model, SerializerMixin):
             'utf-8')
 
 
-class Recipe(SerializerMixin):
+class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'recipes'
 
-    pass
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    instructions = db.Column(db.String, nullable=False)
+    minutes_to_complete = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @validates('instructions')
+    def validate_instruction(self, key, instructions):
+        if not instructions or len(instructions) < 50:
+            raise ValueError(
+                'Instructions must be present, and at least 50 characters long'
+            )
