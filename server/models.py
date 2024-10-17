@@ -21,6 +21,9 @@ class User(db.Model, SerializerMixin):
         self._password_hash = bcrypt.generate_password_hash(password).decode(
             'utf-8')
 
+    def __repr__(self):
+        return f'<User {self.id}>'
+
 
 class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'recipes'
@@ -37,3 +40,6 @@ class Recipe(db.Model, SerializerMixin):
             raise ValueError(
                 'Instructions must be present, and at least 50 characters long'
             )
+
+    def __repr__(self):
+        return f'<Recipe {self.id}>'
