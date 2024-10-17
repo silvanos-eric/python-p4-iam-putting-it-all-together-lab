@@ -12,6 +12,8 @@ class User(db.Model, SerializerMixin):
     _password_hash = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String)
 
+    recipes = db.relationship('Recipe', backref='user')
+
     @hybrid_property
     def password_hash(self):
         raise AttributeError('Private field, _password_hash is not accessible')
@@ -35,7 +37,7 @@ class Recipe(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     @validates('instructions')
-    def validate_instruction(self, key, instructions):
+    def validate_instruction(self, _, instructions):
         if not instructions or len(instructions) < 50:
             raise ValueError(
                 'Instructions must be present, and at least 50 characters long'
