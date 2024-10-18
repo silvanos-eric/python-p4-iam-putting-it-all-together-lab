@@ -25,7 +25,7 @@ class User(db.Model, SerializerMixin):
             'utf-8')
 
     def __repr__(self):
-        return f'<User {self.id}>'
+        return f'<User {self.id} : {self.username}>'
 
 
 class Recipe(db.Model, SerializerMixin):
@@ -37,12 +37,7 @@ class Recipe(db.Model, SerializerMixin):
     minutes_to_complete = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    @validates('instructions')
-    def validate_instruction(self, _, instructions):
-        if not instructions or len(instructions) < 50:
-            raise ValueError(
-                'Instructions must be present, and at least 50 characters long'
-            )
+    __table_args__ = (db.CheckConstraint('length(instructions) >= 50'), )
 
     def __repr__(self):
-        return f'<Recipe {self.id}>'
+        return f'<Recipe {self.id} : {self.title}>'
