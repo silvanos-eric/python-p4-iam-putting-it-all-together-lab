@@ -9,7 +9,7 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Integer, nullable=False, unique=True)
-    _password_hash = db.Column(db.String, nullable=False)
+    _password_hash = db.Column(db.String)
     image_url = db.Column(db.String)
     bio = db.Column(db.String)
 
