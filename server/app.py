@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 
-from auth import CheckSession, Signup
+from auth import CheckSession, Login, Signup
 from config import api, app
 from flask_restful import Resource
-
-
-class Login(Resource):
-    pass
 
 
 class Logout(Resource):
@@ -24,6 +20,7 @@ def not_found_error(error):
 
 api.add_resource(Signup, '/signup')
 api.add_resource(CheckSession, '/check_session')
+api.add_resource(Login, '/login')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

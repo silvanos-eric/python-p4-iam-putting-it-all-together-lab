@@ -8,7 +8,7 @@ from utils import error_handler
 class Signup(Resource):
 
     def post(self):
-        error_messages = []
+        errors = []
 
         # Extract data
         user_data = request.json
@@ -20,17 +20,17 @@ class Signup(Resource):
 
         # Validate fields
         if not username:
-            error_messages.append("Username is required")
+            errors.append("Username is required")
         if not password:
-            error_messages.append("Password is required")
+            errors.append("Password is required")
         # if not confirm_password:
         #     error_messages.append("Confirm Password is required")
         # if password != confirm_password:
         #     error_messages.append(
         #         "Password and Confirm Password do not match")
 
-        if error_messages:
-            return {'errors': error_messages}, 422
+        if errors:
+            return {'errors': errors}, 422
 
         try:
 
@@ -54,17 +54,42 @@ class CheckSession(Resource):
     def get(self):
         user_id = session.get('user_id')
 
-        if not user_id:
+        if user_id is None:
             return {
-                "error": "Unauthorized",
-                "message": "No active session found. Please log in to continue"
+                'error': 'Unauthorized',
+                'message': 'No active session found. Please log in to continue'
             }, 401
 
-        user = db.session.get(User, user_id)
-        if not user:
+        user = User.query.get(user_id)
+        if user is None:
             return {
-                "error": "Unauthorized",
-                "message":
-                "Your account no longer exists. Create a new account"
-            }
+                'error': 'Unauthorized',
+                'message':
+                'Your account no longer exists. Create a new account'
+            }, 401
+
+        return user.to_dict()
+
+
+class Login(Resource):
+
+    def post(self):
+        errors = []
+
+        user_data = request.json
+        username = user_data.get("username")
+        password = user_data.get("password")
+
+        if not username:
+            errors.append("Username is required")
+        if not password:
+            errors.append("Password is required")
+
+        if errors:
+            return {"errors": errors}, 422
+
+        user = User.query.filter_by(username=username).first()
+        if not user or not user.authenticate(password):
+            return {"error": "Invalid username/password"}, 401
+
         return user.to_dict()

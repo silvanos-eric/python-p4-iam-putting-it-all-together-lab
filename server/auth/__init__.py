@@ -1,3 +1,3 @@
-from .routes import CheckSession, Signup
+from .routes import CheckSession, Login, Signup
 
-__all__ = ['Signup', 'CheckSession']
+__all__ = ['Signup', 'CheckSession', 'Login']
