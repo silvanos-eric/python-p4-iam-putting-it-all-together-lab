@@ -2,7 +2,7 @@ from config import db
 from flask import request, session
 from flask_restful import Resource
 from models import User
-from utils import error_handler
+from utils import error_handler, validate_session
 
 
 class Signup(Resource):
@@ -52,22 +52,7 @@ class Signup(Resource):
 class CheckSession(Resource):
 
     def get(self):
-        user_id = session.get('user_id')
-
-        if user_id is None:
-            return {
-                'error': 'Unauthorized',
-                'message': 'No active session found. Please log in to continue'
-            }, 401
-
-        user = User.query.get(user_id)
-        if user is None:
-            return {
-                'error': 'Unauthorized',
-                'message':
-                'Your account no longer exists. Create a new account'
-            }, 401
-
+        user = validate_session()
         return user.to_dict()
 
 
