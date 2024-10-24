@@ -21,4 +21,7 @@ def error_handler(e):
         raise UnprocessableEntity(
             "Instructions should be at least 50 characters long")
 
+    if isinstance(e, IntegrityError):
+        raise UnprocessableEntity()
+
     raise InternalServerError()
