@@ -77,6 +77,8 @@ class Login(Resource):
         if not user or not user.authenticate(password):
             return {"error": "Invalid username/password"}, 401
 
+        session['user_id'] = user.id
+
         return user.to_dict()
 
 
