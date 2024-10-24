@@ -78,3 +78,12 @@ class Login(Resource):
             return {"error": "Invalid username/password"}, 401
 
         return user.to_dict()
+
+
+class Logout(Resource):
+
+    def delete(self):
+        validate_session()
+        session.pop('user_id', None)
+
+        return {}, 204
