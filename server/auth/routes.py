@@ -3,6 +3,7 @@ from flask import request, session
 from flask_restful import Resource
 from models import User
 from utils import error_handler, validate_session
+from werkzeug.exceptions import Unauthorized, UnprocessableEntity
 
 
 class Signup(Resource):
@@ -30,7 +31,7 @@ class Signup(Resource):
         #         "Password and Confirm Password do not match")
 
         if errors:
-            return {'errors': errors}, 422
+            raise UnprocessableEntity(errors)
 
         try:
 
@@ -71,11 +72,11 @@ class Login(Resource):
             errors.append("Password is required")
 
         if errors:
-            return {"errors": errors}, 422
+            raise UnprocessableEntity(errors)
 
         user = User.query.filter_by(username=username).first()
         if not user or not user.authenticate(password):
-            return {"error": "Invalid username/password"}, 401
+            raise Unauthorized("Invalid username/password")
 
         session['user_id'] = user.id
 
