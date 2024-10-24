@@ -15,6 +15,8 @@ class User(db.Model, SerializerMixin):
 
     recipes = db.relationship('Recipe', backref='user')
 
+    serialize_rules = ('-_password_hash', '-recipes.user')
+
     @hybrid_property
     def password_hash(self):
         raise AttributeError('Private field, _password_hash is not accessible')
@@ -39,6 +41,8 @@ class Recipe(db.Model, SerializerMixin):
     instructions = db.Column(db.String, nullable=False)
     minutes_to_complete = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    serialize_rules = ('-user.recipes', )
 
     __table_args__ = (db.CheckConstraint('length(instructions) >= 50'), )
 

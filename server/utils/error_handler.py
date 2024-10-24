@@ -1,3 +1,4 @@
+from models import db
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import UnsupportedMediaType
 
@@ -5,6 +6,8 @@ from werkzeug.exceptions import UnsupportedMediaType
 def error_handler(e):
     print(f"\033[91m{type(e)}\033[0m")
     print(f"\033[91m{e}\033[0m")
+
+    db.session.rollback()
 
     if isinstance(e, UnsupportedMediaType):
         return {
